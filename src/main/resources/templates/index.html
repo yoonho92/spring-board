@@ -1,0 +1,77 @@
+<html>
+<head>
+    <script>
+        function searchPost(){
+            let title = document.getElementById("searchInput").value;
+
+            fetch("http://localhost:8080/board?title=" + title, {
+                method: 'GET'
+            })
+        }
+    </script>
+    <style>
+        div#wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 850px;
+            height: 700px;
+            margin-left: -450px;
+            margin-top: -350px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <div style="position: relative;left: 80%;margin-bottom: 100px">
+        <table>
+            <tr>
+                <td>Logout</td>
+                <td><a href="/auth/signin">SignIn</a></td>
+                <td><a>SignUp</a></td>
+            </tr>
+        </table>
+    </div>
+    <table style="width: 850px">
+        <tr style="height: 70px">
+            <th style="width: 100px;">번호</th>
+            <th style="width: 650px;">제목</th>
+            <th style="width: 100px;">글쓴이</th>
+        </tr>
+        <tr style="height: 30px" th:each="post : ${posts}">
+            <td style="text-align: center" th:text="${post.id}"></td>
+            <td><a th:text="${post.title}" th:href="|board/${post.id}|"></a></td>
+            <td style="text-align: center" th:text="${post.author}"></td>
+        </tr>
+    </table>
+    <div>
+        <button style="margin-top: 20px" onclick="location.href='/board/save'">글 쓰기</button>
+    </div>
+    <div style="margin-top: 5px">
+        <table style="margin-left: auto; margin-right: auto">
+            <tr>
+                <td th:if="${!pagination.isFirstBlock()}">
+                    <a th:href="|?page=${pagination.getStartPage() -1}&title=${title}|">이전</a>
+                </td>
+                <td th:each="num : ${#numbers.sequence(pagination.getStartPage(), pagination.getEndPage())}">
+                    <a th:text="${num}" th:href="|?page=${num}&title=${title}|"></a>
+                </td>
+                <td th:if="${!pagination.isLastBlock()}">
+                    <a th:href="|?page=${pagination.getEndPage() + 1}&title=${title}|">다음</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="text-align: center;margin-top: 20px">
+        <form method="get" action="/board">
+            <input name="title" th:value="${title}">
+            <button type="submit">검색</button>
+        </form>
+
+    </div>
+
+</div>
+</body>
+
+</html>

@@ -1,0 +1,151 @@
+<html>
+<head>
+    <script th:inline="javascript">
+        function postDelete() {
+            fetch("http://localhost:8080/board/[[${post.id}]]/delete", {
+                method: 'DELETE'
+            })
+                .finally(() => window.location.href = "http://localhost:8080/board");
+        }
+
+        function saveComment() {
+            let commentAuthor =  document.getElementById('commentAuthor').value;
+            let commentContent = document.getElementById('commentContent').value;
+            fetch("http://localhost:8080/board/comment/save", {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    "author": commentAuthor,
+                    "content": commentContent,
+                    "post": {"id": [[${post.id}]]}
+                })
+            })
+                .finally(() => window.location.href = "http://localhost:8080/board/[[${post.id}]]");
+        }
+
+        function saveSubComment(parentCommentId) {
+            let subCommentAuthor = document.getElementById("subCommentAuthor_" + parentCommentId).value;
+            let subCommentContent = document.getElementById('subCommentContent_' + parentCommentId).value;
+            fetch("http://localhost:8080/board/comment/save", {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    "author": subCommentAuthor,
+                    "content": subCommentContent,
+                    "isPresentParent": true,
+                    "parentComment": {"id": parentCommentId}
+                })
+            })
+                .finally(() => window.location.href = "http://localhost:8080/board/[[${post.id}]]");
+        }
+
+        function commentDelete(commentId) {
+            fetch("http://localhost:8080/board/comment/" + commentId + "/delete", {
+                method: 'DELETE'
+            })
+                .finally(() => window.location.href = "http://localhost:8080/board/[[${post.id}]]");
+        }
+
+        function changeVisibilityForInputBox(id) {
+            document.getElementById("subCommentAuthor_" + id).style.display = ""
+            document.getElementById("subCommentContent_" + id).style.display = ""
+            document.getElementById("subCommentButton_" + id).style.display = ""
+        }
+    </script>
+    <style>
+        div#wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 950px;
+            height: 500px;
+            margin-left: -500px;
+            margin-top: -250px;
+            text-align: right;
+        }
+
+        div.innerDiv * {
+            vertical-align: middle;
+        }
+
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <div class="innerDiv" style="width: 950px;text-align: left">
+        <label>작성자</label>
+        <input style="width: 150px" type="text" name="author" th:value="${post.author}" readonly>
+    </div>
+    <div class="innerDiv" style="width: 950px;margin-top: 10px">
+        <label style="margin-right: 15px">제목</label>
+        <input style="width: 895px" type="text" name="title" th:value="${post.title}" readonly>
+    </div>
+    <div class="innerDiv" style="width: 950px; height: 300px;margin-top: 20px">
+        <label style="margin-right: 15px">내용</label>
+        <textarea name="content" id="content" style="width: 895px;height: 300px; resize: none" th:text="${post.content}"
+                  readonly></textarea>
+    </div>
+
+    <div style="margin-top: 20px">
+        <button type="button" th:onclick="|location.href='${post.id}/edit'|">수정</button>
+        <button type="button" onclick="postDelete()">삭제</button>
+        <button type="button" onclick="location.href='/board'">목록</button>
+    </div>
+    <div style="margin-top: 30px;margin-left: 50px">
+        <table th:each="comment : ${post.comments}" style="margin-left: 10px">
+            <tr style="height: 30px">
+                <td style="width: 120px;text-align: center" th:text="${comment.author}"></td>
+                <td style="width: 645px" th:text="${comment.content}"></td>
+                <td style="width: 60px" th:if="${!comment.isDeleted}"
+                    th:onclick="|changeVisibilityForInputBox('${comment.id}')|"><a>대댓글</a>
+                <td style="width: 50px" th:if="${!comment.isDeleted}" th:onclick="|commentDelete('${comment.id}')|"><a>삭제</a>
+                </td>
+            </tr>
+            <tr th:each="subComment : ${comment.subComments}" style="height: 25px">
+                <td style="text-align: center" th:text="${subComment.author}"></td>
+                <td th:text="|↳ ${subComment.content}|"></td>
+                <td style="width: 60px"></td>
+                <td style="width: 50px" th:onclick="|commentDelete('${subComment.id}')|"><a>삭제</a></td>
+            </tr>
+            <tr>
+                <td style="align-content: center">
+                    <input style="display: none;width: 110px;" th:id="|subCommentAuthor_${comment.id}|">
+                </td>
+                <td>
+                    <input style="display: none;width: 645px" type="text" th:id="|subCommentContent_${comment.id}|" >
+                </td>
+                <td style="width: 60px">
+                    <button type="button" th:id="|subCommentButton_${comment.id}|" th:onclick="|saveSubComment('${comment.id}')|" style="display: none;margin-left: 5px">등록
+                    </button>
+                </td>
+                <td style="width: 50px">
+                </td>
+
+            </tr>
+        </table>
+        <table style="margin-top: 15px;margin-left: 10px">
+            <tr>
+                <td style="width: 120px;">
+                    <input style="width: 110px" type="text" id="commentAuthor">
+                </td>
+                <td style="width: 645px">
+                    <input style="width: 645px" type="text" id="commentContent">
+                </td>
+                <td>
+                    <button type="button" style="margin-left: 5px" onclick="saveComment()">등록</button>
+                </td>
+
+            </tr>
+        </table>
+
+
+    </div>
+</div>
+
+
+</body>
+</html>

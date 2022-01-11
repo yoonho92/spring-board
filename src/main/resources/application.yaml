@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./db/h2/testdb;MODE=mysql
+    driver-class-name: org.h2.Driver
+    username: yoonho
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
