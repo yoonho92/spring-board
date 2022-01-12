@@ -1,22 +1,18 @@
-package test.board.dto;
+package test.board.post.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import test.board.comment.Comment;
 
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-public class PostForRes {
+@AllArgsConstructor
+public class Detail {
     private Long id;
-
+    private Long accountId;
     private String title;
-
     private String author;
-
     private String content;
-
     private List<Comment> comments;
-
 }

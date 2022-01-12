@@ -3,9 +3,9 @@ package test.board.auth;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import test.board.auth.dto.ReqForSign;
-import test.board.auth.dto.ResForSignIn;
-import test.board.auth.dto.ResForSignUp;
+import test.board.auth.dto.Sign;
+import test.board.auth.dto.SignIn;
+import test.board.auth.dto.SignUp;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,8 +23,8 @@ public class AuthController {
 
     @ResponseBody
     @PostMapping("/signin")
-    public ResForSignIn signIn(
-            @RequestBody ReqForSign req,
+    public SignIn signIn(
+            @RequestBody Sign req,
             HttpSession session
     ) {
         return authService.signIn(req, session);
@@ -37,8 +37,8 @@ public class AuthController {
 
     @ResponseBody
     @PostMapping("/signup")
-    public ResForSignUp signUp(
-            @RequestBody ReqForSign req,
+    public SignUp signUp(
+            @RequestBody Sign req,
             HttpSession session) {
         return authService.signUp(req, session);
     }

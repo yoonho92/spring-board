@@ -6,6 +6,17 @@
             let formDataObject = {};
             formData.forEach(((value, key) => formDataObject[key] = value))
 
+            if(formDataObject.author === ""){
+                alert("작성자를 입력해주세요.")
+                return
+            }else if(formDataObject.title === ""){
+                alert("제목을 입력해주세요.")
+                return
+            }else if(formDataObject.content === ""){
+                alert("내용을 입력해주세요.")
+                return
+            }
+
             if ([[${userStatus.state}]] == 'SIGNING') {
                 formDataObject.account = {"id": [[${userStatus.accountId}]]}
             }

@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ResForSignIn {
+public class SignIn {
     private Long id;
     private String name;
     private State state;

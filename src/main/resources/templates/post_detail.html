@@ -13,6 +13,13 @@
             let commentAuthor =  document.getElementById('commentAuthor').value;
             let commentContent = document.getElementById('commentContent').value;
 
+            if(commentAuthor === ""){
+                alert("작성자를 입력해주세요.")
+                return
+            }else if(commentContent === ""){
+                alert("댓글 내용을 입력해주세요.")
+                return
+            }
             let formDataObject = {
                 "author": commentAuthor,
                 "content": commentContent,
@@ -36,6 +43,14 @@
         function saveSubComment(parentCommentId) {
             let subCommentAuthor = document.getElementById("subCommentAuthor_" + parentCommentId).value;
             let subCommentContent = document.getElementById('subCommentContent_' + parentCommentId).value;
+
+            if(subCommentAuthor === ""){
+                alert("작성자를 입력해주세요.")
+                return
+            }else if(subCommentContent === ""){
+                alert("대댓글 내용을 입력해주세요.")
+                return
+            }
 
             let formDataObject = {
                 "author": subCommentAuthor,

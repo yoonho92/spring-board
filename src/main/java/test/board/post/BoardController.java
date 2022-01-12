@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import test.board.dto.Pagination;
 import test.board.dto.UserStatusForSession;
+import test.board.post.dto.DefaultForPost;
 
 @Controller
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class BoardController {
             @RequestParam(name = "page", defaultValue = "1", required = false) int page,
             @RequestParam(name = "limit", defaultValue = "10", required = false) int limit,
             @ModelAttribute("userStatus") UserStatusForSession userStatus) {
-        Page<Post> pages = boardService.searchByTitle(title, PageRequest.of(page - 1, limit, Sort.Direction.DESC, "id"));
+        Page<DefaultForPost> pages = boardService.searchByTitle(title, PageRequest.of(page - 1, limit, Sort.Direction.DESC, "id"));
         model.addAttribute("posts", pages);
         model.addAttribute("title", title);
         model.addAttribute("pagination", new Pagination(pages, page - 1));
@@ -38,7 +39,7 @@ public class BoardController {
             @ModelAttribute("userStatus") UserStatusForSession userStatus,
             @PathVariable("id") Long id
     ) {
-        model.addAttribute("post", boardService.findPostById(id));
+        model.addAttribute("post", boardService.findDetailById(id));
         model.addAttribute("userStatus", userStatus);
 
         return "post_detail";
@@ -52,7 +53,7 @@ public class BoardController {
 
     @ResponseBody
     @PostMapping("/save")
-    public Post savePost(@RequestBody Post post) {
+    public DefaultForPost savePost(@RequestBody Post post) {
         return boardService.save(post);
     }
 
@@ -61,13 +62,13 @@ public class BoardController {
             Model model,
             @PathVariable("id") Long id
     ) {
-        model.addAttribute("post", boardService.findPostById(id));
+        model.addAttribute("post", boardService.findDetailById(id));
         return "post_edit";
     }
 
     @ResponseBody
     @PatchMapping(value = "/{id}/edit")
-    public Post editPostById(
+    public DefaultForPost editPostById(
             @RequestBody Post post,
             @SessionAttribute("userStatus") UserStatusForSession userStatus) {
         return boardService.edit(post, userStatus);
