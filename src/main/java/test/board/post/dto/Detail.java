@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import test.board.comment.Comment;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Data
@@ -15,4 +16,5 @@ public class Detail {
     private String author;
     private String content;
     private List<Comment> comments;
+    private OffsetDateTime date;
 }
