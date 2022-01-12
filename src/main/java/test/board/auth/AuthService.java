@@ -3,7 +3,9 @@ package test.board.auth;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import test.board.auth.dto.ReqForSign;
-import test.board.auth.dto.UserStatus;
+import test.board.auth.dto.ResForSignIn;
+import test.board.auth.dto.ResForSignUp;
+import test.board.dto.UserStatusForSession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,12 +15,15 @@ import javax.servlet.http.HttpSession;
 public class AuthService {
     private final AuthRepository authRepository;
 
-    public UserStatus signUp(ReqForSign req, HttpServletRequest httpRequest) {
+    public ResForSignUp signUp(ReqForSign req, HttpSession session) {
         Account user = authRepository.findByName(req.getName());
-        UserStatus userStatus = new UserStatus(0L, req.getName(), UserStatus.State.NONE);
+
+        ResForSignUp resForSignUp = new ResForSignUp();
+        resForSignUp.setName(req.getName());
+        resForSignUp.setDate(req.getDate());
 
         if (user == null) {
-            userStatus.setState(UserStatus.State.SIGNUP);
+            resForSignUp.setState(ResForSignUp.State.SIGNUP);
 
             Account newUser = new Account();
             newUser.setName(req.getName());
@@ -26,38 +31,41 @@ public class AuthService {
 
             authRepository.save(newUser);
 
-            signIn(req, httpRequest);
+            signIn(req, session);
         } else {
-            userStatus.setState(UserStatus.State.EXIST);
+            resForSignUp.setState(ResForSignUp.State.EXIST);
         }
 
-        return userStatus;
+        return resForSignUp;
     }
 
-    public UserStatus signIn(ReqForSign req, HttpServletRequest httpRequest) {
+    public ResForSignIn signIn(ReqForSign req, HttpSession session) {
         Account user = authRepository.findByName(req.getName());
-        UserStatus userStatus = new UserStatus(0L, req.getName(), UserStatus.State.NONE);
+        ResForSignIn resForSignIn = new ResForSignIn();
 
         if (user != null) {
+            resForSignIn.setName(user.getName());
+
             if (req.getSecret().equals(user.getSecret())) {
-                userStatus.setId(user.getId());
-                userStatus.setState(UserStatus.State.SIGNING);
+                resForSignIn.setState(ResForSignIn.State.SIGNIN);
+                resForSignIn.setId(user.getId());
 
-                HttpSession session = httpRequest.getSession();
-                session.setAttribute("userStatus", userStatus);
-
+                session.setAttribute(
+                        "userStatus",
+                        new UserStatusForSession(user.getId(), req.getName(), UserStatusForSession.State.SIGNING));
             } else {
-                userStatus.setState(UserStatus.State.FAIL);
+                resForSignIn.setState(ResForSignIn.State.FAIL);
             }
         } else {
-            userStatus.setState(UserStatus.State.NOTEXIST);
+            resForSignIn.setState(ResForSignIn.State.NOTEXIST);
         }
 
-        return userStatus;
+        return resForSignIn;
     }
 
-    public void logout(HttpServletRequest httpRequest){
+    public void logout(HttpServletRequest httpRequest) {
         HttpSession session = httpRequest.getSession();
         session.invalidate();
     }
+
 }

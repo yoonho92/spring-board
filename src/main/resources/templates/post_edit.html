@@ -1,19 +1,32 @@
 <html>
 <head>
     <script th:inline="javascript">
-        function editPost(){
+        function editPost() {
             let formData = new FormData(document.getElementById('formForEdit'));
-            let formDataObject ={};
+            let formDataObject = {};
+
             formData.forEach(((value, key) => formDataObject[key] = value))
+
+            if ([[${userStatus.state}]] == 'SIGNING') {
+                formDataObject.account = {"id": [[${userStatus.accountId}]]}
+            }
+
             fetch("http://localhost:8080/board/[[${post.id}]]/edit", {
                 headers: {
-                    "Content-Type":"application/json"
+                    "Content-Type": "application/json"
                 },
                 method: 'PATCH',
                 body: JSON.stringify(formDataObject)
             })
                 .then(response => response.json())
-                .then(it => window.location.href="http://localhost:8080/board/" + it.id);
+                .then(it => window.location.href = "http://localhost:8080/board/" + it.id);
+        }
+
+        function logout(){
+            fetch("http://localhost:8080/auth/logout", {
+                method: 'POST'
+            })
+                .finally(() => window.location.href = "http://localhost:8080/board")
         }
     </script>
     <style>
@@ -21,13 +34,14 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 850px;
-            height: 500px;
-            margin-left: -450px;
-            margin-top: -250px;
+            width: 950px;
+            height: 1000px;
+            margin-left: -500px;
+            margin-top: -500px;
             text-align: right;
         }
-        div.innerDiv *{
+
+        div.innerDiv * {
             vertical-align: middle;
         }
 
@@ -35,20 +49,39 @@
 </head>
 <body>
 <div id="wrapper">
-    <form name="formData" id="formForEdit">
-        <input type="hidden" name="id" th:value="${post.id}">
-        <input type="hidden" name="author" th:value="${post.author}">
-        <div class="innerDiv" style="width: 850px">
-            <label>제목</label>
-            <input style="width: 800px" type="text" name="title" th:value="${post.title}">
+    <div class="innerDiv" style="width: 950px;text-align: left">
+        <div style="position: relative;left: 85%;margin-bottom: 100px">
+            <table>
+                <tr>
+                    <td style="width: 65px">
+                        <a href="/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
+                        <a href="/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
+                    </td>
+                    <td style="width: 65px">
+                        <a href="/auth/signup" style="text-decoration:none !important;color: black"
+                           th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
+                        <a href="/auth/logout" style="text-decoration:none !important;color: black"
+                           th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <br>
-        <br>
-        <div class="innerDiv" style="width: 850px; height: 300px">
-            <label for="content">내용</label>
-            <textarea name="content" id="content" style="width: 800px;height: 300px; resize: none" th:text="${post.content}"></textarea>
+
+    <form name="formData" id="formForEdit" style="">
+        <label>작성자</label>
+        <input style="width: 150px" type="text" name="author" th:value="${post.author}" th:readonly="${userStatus.state.toString().equals('SIGNING')}">
+        <input type="hidden" name="id" th:value="${post.id}">
+        <div class="innerDiv" style="width: 950px;margin-top: 10px">
+            <label style="margin-right: 15px">제목</label>
+            <input style="width: 895px" type="text" name="title" th:value="${post.title}">
+        </div>
+        <div class="innerDiv" style="width: 950px; height: 300px;margin-top: 20px">
+            <label style="margin-right: 15px">내용</label>
+            <textarea name="content" id="content" style="width: 895px;height: 300px; resize: none"
+                      th:text="${post.content}"></textarea>
         </div>
     </form>
+    </div>
     <div class="innerDiv">
         <button type="button" onclick="editPost()">확인</button>
         <button type="button" th:onclick="|location.href='/board/${post.id}'|">취소</button>

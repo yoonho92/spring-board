@@ -20,7 +20,7 @@
             };
 
             if([[${userStatus.state}]] == 'SIGNING'){
-                formDataObject.account = {"id": [[${userStatus.id}]]}
+                formDataObject.account = {"id": [[${userStatus.accountId}]]}
             }
 
             fetch("http://localhost:8080/board/comment/save", {
@@ -45,7 +45,7 @@
             };
 
             if([[${userStatus.state}]] == 'SIGNING'){
-                formDataObject.account = {"id": [[${userStatus.id}]]}
+                formDataObject.account = {"id": [[${userStatus.accountId}]]}
             }
 
             fetch("http://localhost:8080/board/comment/save", {
@@ -70,6 +70,13 @@
             document.getElementById("subCommentContent_" + id).style.display = ""
             document.getElementById("subCommentButton_" + id).style.display = ""
         }
+
+        function logout(){
+            fetch("http://localhost:8080/auth/logout", {
+                method: 'POST'
+            })
+                .finally(() => window.location.href = "http://localhost:8080/board")
+        }
     </script>
     <style>
         div#wrapper {
@@ -77,9 +84,9 @@
             top: 50%;
             left: 50%;
             width: 950px;
-            height: 500px;
+            height: 1000px;
             margin-left: -500px;
-            margin-top: -250px;
+            margin-top: -500px;
             text-align: right;
         }
 
@@ -92,6 +99,20 @@
 <body>
 <div id="wrapper">
     <div class="innerDiv" style="width: 950px;text-align: left">
+        <div style="position: relative;left: 85%;margin-bottom: 100px">
+            <table>
+                <tr>
+                    <td style="width: 65px">
+                        <a href="/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
+                        <a href="/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
+                    </td>
+                    <td style="width: 65px">
+                        <a href="/auth/signup" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
+                        <a href="/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <label>작성자</label>
         <input style="width: 150px" type="text" name="author" th:value="${post.author}" readonly>
     </div>
@@ -106,8 +127,8 @@
     </div>
 
     <div style="margin-top: 20px">
-        <button type="button" th:onclick="|location.href='${post.id}/edit'|" th:if="${post.accountId == userStatus.id}">수정</button>
-        <button type="button" onclick="postDelete()" th:if="${post.accountId == userStatus.id}">삭제</button>
+        <button type="button" th:onclick="|location.href='${post.id}/edit'|" th:if="${post.accountId == userStatus.accountId}">수정</button>
+        <button type="button" onclick="postDelete()" th:if="${post.accountId == userStatus.accountId}">삭제</button>
         <button type="button" onclick="location.href='/board'">목록</button>
     </div>
     <div style="margin-top: 30px;margin-left: 50px">
@@ -115,7 +136,7 @@
             <tr style="height: 30px">
                 <td style="width: 120px;text-align: center" th:text="${comment.author}"></td>
                 <td style="width: 645px" th:text="${comment.content}"></td>
-                <td style="width: 40px;text-align: center"><a th:if="${!comment.isDeleted && comment.accountId == userStatus.id}" th:onclick="|commentDelete('${comment.id}')|">삭제</a>
+                <td style="width: 40px;text-align: center"><a th:if="${!comment.isDeleted && comment.accountId == userStatus.accountId}" th:onclick="|commentDelete('${comment.id}')|">삭제</a>
                 </td>
                 <td style="width: 60px" th:if="${!comment.isDeleted}"
                     th:onclick="|changeVisibilityForInputBox('${comment.id}')|"><a>대댓글</a>
@@ -123,7 +144,7 @@
             <tr th:each="subComment : ${comment.subComments}" style="height: 25px">
                 <td style="text-align: center" th:text="${subComment.author}"></td>
                 <td th:text="|↳ ${subComment.content}|"></td>
-                <td style="width: 40px;text-align: center"><a th:onclick="|commentDelete('${subComment.id}')|" th:if="${subComment.accountId == userStatus.id || subComment.accountId == null}">삭제</a></td>
+                <td style="width: 40px;text-align: center"><a th:onclick="|commentDelete('${subComment.id}')|" th:if="${subComment.accountId == userStatus.accountId}">삭제</a></td>
                 <td style="width: 60px"></td>
             </tr>
             <tr>

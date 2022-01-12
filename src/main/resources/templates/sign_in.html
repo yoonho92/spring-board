@@ -33,7 +33,7 @@
             })
                 .then((response) => response.json())
                 .then((it) => {
-                    if (it.state == "SIGNING") {
+                    if (it.state == "SIGNIN") {
                         window.location.href = "http://localhost:8080/board"
                     } else if (it.state == "NOTEXIST" || it.state == "FAIL") {
                         alert("아이디 혹은 비밀번호가 올바르지 않습니다.")
@@ -65,7 +65,7 @@
         <tr style="text-align: right;height: 50px">
             <td></td>
             <td>
-                <a href="/auth/signup">SignUp</a>
+                <a href="/auth/signup" style="text-decoration:none !important;color: black">SignUp</a>
                 <a onclick="signIn()">SignIn</a>
             </td>
         </tr>

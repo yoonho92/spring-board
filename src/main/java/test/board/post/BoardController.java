@@ -4,18 +4,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import test.board.Pagination;
-import test.board.auth.dto.UserStatus;
-
-import javax.servlet.http.HttpServletRequest;
+import test.board.dto.Pagination;
+import test.board.dto.UserStatusForSession;
 
 @Controller
 @AllArgsConstructor
-
+@SessionAttributes("userStatus")
 @RequestMapping("/board")
 public class BoardController {
     private final PostService boardService;
@@ -26,13 +23,11 @@ public class BoardController {
             @RequestParam(required = false, defaultValue = "") String title,
             @RequestParam(name = "page", defaultValue = "1", required = false) int page,
             @RequestParam(name = "limit", defaultValue = "10", required = false) int limit,
-            HttpServletRequest httpRequest) {
-        boardService.sessionInit(httpRequest);
+            @ModelAttribute("userStatus") UserStatusForSession userStatus) {
         Page<Post> pages = boardService.searchByTitle(title, PageRequest.of(page - 1, limit, Sort.Direction.DESC, "id"));
         model.addAttribute("posts", pages);
         model.addAttribute("title", title);
         model.addAttribute("pagination", new Pagination(pages, page - 1));
-        model.addAttribute("userStatus", httpRequest.getSession().getAttribute("userStatus"));
 
         return "index";
     }
@@ -40,10 +35,9 @@ public class BoardController {
     @GetMapping("/{id}")
     public String findPostById(
             Model model,
-            @SessionAttribute(value = "userStatus", required = false) UserStatus userStatus,
+            @ModelAttribute("userStatus") UserStatusForSession userStatus,
             @PathVariable("id") Long id
     ) {
-
         model.addAttribute("post", boardService.findPostById(id));
         model.addAttribute("userStatus", userStatus);
 
@@ -52,17 +46,14 @@ public class BoardController {
 
     @GetMapping("/save")
     public String savePost(
-            Model model,
-            @SessionAttribute(value = "userStatus", required = false) UserStatus userStatus) {
-        model.addAttribute("userStatus", userStatus);
-
+            @ModelAttribute("userStatus") UserStatusForSession userStatus) {
         return "post_save";
     }
 
     @ResponseBody
     @PostMapping("/save")
-    public Post savePost(@RequestBody Post board) {
-        return boardService.save(board);
+    public Post savePost(@RequestBody Post post) {
+        return boardService.save(post);
     }
 
     @GetMapping("/{id}/edit")
@@ -76,14 +67,19 @@ public class BoardController {
 
     @ResponseBody
     @PatchMapping(value = "/{id}/edit")
-    public Post editPostById(@RequestBody Post post) {
-        return boardService.edit(post);
+    public Post editPostById(
+            @RequestBody Post post,
+            @SessionAttribute("userStatus") UserStatusForSession userStatus) {
+        return boardService.edit(post, userStatus);
     }
 
     @ResponseBody
     @DeleteMapping(value = "/{id}/delete")
-    public void deletePostById(@PathVariable("id") Long id) {
-        boardService.deletePostById(id);
+    public void deletePostById(
+            @PathVariable("id") Long id,
+            @SessionAttribute("userStatus") UserStatusForSession userStatus
+    ) {
+        boardService.deletePostById(id, userStatus);
     }
 
 }

@@ -21,10 +21,10 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 850px;
-            height: 700px;
-            margin-left: -450px;
-            margin-top: -350px;
+            width: 950px;
+            height: 1000px;
+            margin-left: -500px;
+            margin-top: -500px;
             text-align: right;
         }
     </style>
@@ -34,15 +34,18 @@
     <div style="position: relative;left: 85%;margin-bottom: 100px">
         <table>
             <tr>
-                <td style="width: 65px"><a href="/auth/signin" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a></td>
                 <td style="width: 65px">
-                    <a href="/auth/signup" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
-                    <a href="/auth/logout" th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
+                    <a href="/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
+                    <a href="/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
+                </td>
+                <td style="width: 65px">
+                    <a href="/auth/signup" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
+                    <a href="/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
                 </td>
             </tr>
         </table>
     </div>
-    <table style="width: 850px">
+    <table style="width: 850px;">
         <tr style="height: 70px">
             <th style="width: 100px;">번호</th>
             <th style="width: 650px;">제목</th>
@@ -50,7 +53,7 @@
         </tr>
         <tr style="height: 30px" th:each="post : ${posts}">
             <td style="text-align: center" th:text="${post.id}"></td>
-            <td><a th:text="${post.title}" th:href="|board/${post.id}|"></a></td>
+            <td><a style="text-decoration:none !important;" th:text="${post.title}" th:href="|board/${post.id}|"></a></td>
             <td style="text-align: center" th:text="${post.author}"></td>
         </tr>
     </table>
