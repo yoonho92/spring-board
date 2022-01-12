@@ -8,6 +8,13 @@
                 method: 'GET'
             })
         }
+
+        function logout(){
+            fetch("http://localhost:8080/auth/logout", {
+                method: 'POST'
+            })
+            .finally(() => window.location.href = "http://localhost:8080/board")
+        }
     </script>
     <style>
         div#wrapper {
@@ -24,12 +31,14 @@
 </head>
 <body>
 <div id="wrapper">
-    <div style="position: relative;left: 80%;margin-bottom: 100px">
+    <div style="position: relative;left: 85%;margin-bottom: 100px">
         <table>
             <tr>
-                <td>Logout</td>
-                <td><a href="/auth/signin">SignIn</a></td>
-                <td><a>SignUp</a></td>
+                <td style="width: 65px"><a href="/auth/signin" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a></td>
+                <td style="width: 65px">
+                    <a href="/auth/signup" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
+                    <a href="/auth/logout" th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
+                </td>
             </tr>
         </table>
     </div>
@@ -46,7 +55,7 @@
         </tr>
     </table>
     <div>
-        <button style="margin-top: 20px" onclick="location.href='/board/save'">글 쓰기</button>
+        <button style="margin-top: 20px" onclick="location.href='/board/save'">작성</button>
     </div>
     <div style="margin-top: 5px">
         <table style="margin-left: auto; margin-right: auto">

@@ -4,13 +4,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import test.board.Pagination;
+import test.board.auth.dto.UserStatus;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @AllArgsConstructor
+
 @RequestMapping("/board")
 public class BoardController {
     private final PostService boardService;
@@ -20,25 +25,37 @@ public class BoardController {
             Model model,
             @RequestParam(required = false, defaultValue = "") String title,
             @RequestParam(name = "page", defaultValue = "1", required = false) int page,
-            @RequestParam(name = "limit", defaultValue = "10", required = false) int limit) {
+            @RequestParam(name = "limit", defaultValue = "10", required = false) int limit,
+            HttpServletRequest httpRequest) {
+        boardService.sessionInit(httpRequest);
         Page<Post> pages = boardService.searchByTitle(title, PageRequest.of(page - 1, limit, Sort.Direction.DESC, "id"));
         model.addAttribute("posts", pages);
         model.addAttribute("title", title);
         model.addAttribute("pagination", new Pagination(pages, page - 1));
+        model.addAttribute("userStatus", httpRequest.getSession().getAttribute("userStatus"));
+
         return "index";
     }
 
     @GetMapping("/{id}")
     public String findPostById(
             Model model,
-            @PathVariable("id") Long id) {
+            @SessionAttribute(value = "userStatus", required = false) UserStatus userStatus,
+            @PathVariable("id") Long id
+    ) {
 
         model.addAttribute("post", boardService.findPostById(id));
+        model.addAttribute("userStatus", userStatus);
+
         return "post_detail";
     }
 
     @GetMapping("/save")
-    public String savePost() {
+    public String savePost(
+            Model model,
+            @SessionAttribute(value = "userStatus", required = false) UserStatus userStatus) {
+        model.addAttribute("userStatus", userStatus);
+
         return "post_save";
     }
 
@@ -51,7 +68,8 @@ public class BoardController {
     @GetMapping("/{id}/edit")
     public String editPostById(
             Model model,
-            @PathVariable("id") Long id) {
+            @PathVariable("id") Long id
+    ) {
         model.addAttribute("post", boardService.findPostById(id));
         return "post_edit";
     }
@@ -59,7 +77,7 @@ public class BoardController {
     @ResponseBody
     @PatchMapping(value = "/{id}/edit")
     public Post editPostById(@RequestBody Post post) {
-        return boardService.save(post);
+        return boardService.edit(post);
     }
 
     @ResponseBody

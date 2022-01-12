@@ -17,11 +17,12 @@
         }
 
     </style>
+
     <script>
-        function signIn() {
+        function signUp() {
             let userName = document.getElementById('userName').value;
             let userSecret = document.getElementById('userSecret').value;
-            fetch("http://localhost:8080/auth/signin", {
+            fetch("http://localhost:8080/auth/signup", {
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -33,11 +34,11 @@
             })
                 .then((response) => response.json())
                 .then((it) => {
-                    if (it.state == "SIGNING") {
+                    if (it.state == "SIGNUP") {
                         window.location.href = "http://localhost:8080/board"
-                    } else if (it.state == "NOTEXIST" || it.state == "FAIL") {
-                        alert("아이디 혹은 비밀번호가 올바르지 않습니다.")
-                        window.location.href = "http://localhost:8080/auth/signin"
+                    } else if (it.state == "EXIST") {
+                        alert("이미 존재하는 아이디입니다.")
+                        window.location.href = "http://localhost:8080/auth/signup"
                     }
                 })
         }
@@ -65,8 +66,8 @@
         <tr style="text-align: right;height: 50px">
             <td></td>
             <td>
-                <a href="/auth/signup">SignUp</a>
-                <a onclick="signIn()">SignIn</a>
+                <a>취소</a>
+                <a onclick="signUp()">확인</a>
             </td>
         </tr>
     </table>

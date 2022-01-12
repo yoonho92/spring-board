@@ -5,6 +5,11 @@
             let formData = new FormData(document.getElementById('formForEdit'));
             let formDataObject = {};
             formData.forEach(((value, key) => formDataObject[key] = value))
+
+            if([[${userStatus.state}]] == 'SIGNING'){
+                formDataObject.account = {"id" : [[${userStatus.id}]]}
+            }
+
             fetch("http://localhost:8080/board/save", {
                 headers: {
                     "Content-Type": "application/json"
@@ -15,6 +20,7 @@
                 .then(response => response.json())
                 .then((it) => window.location.href = "http://localhost:8080/board/" + it.id);
         }
+        console.log([[${userStatus.state}]])
     </script>
     <style>
         div#wrapper {
@@ -39,7 +45,8 @@
     <form name="formData" id="formForEdit">
         <div class="innerDiv" style="width: 950px;text-align: left">
             <label>작성자</label>
-            <input style="width: 150px" type="text" name="author">
+            <input style="width: 150px" type="text" name="author" th:value="${userStatus.name}" th:readonly="${userStatus.state.toString().equals('SIGNING')}">
+
         </div>
         <div class="innerDiv" style="width: 950px;margin-top: 10px">
             <label style="margin-right: 15px">제목</label>

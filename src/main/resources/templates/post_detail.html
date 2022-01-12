@@ -1,6 +1,7 @@
 <html>
 <head>
     <script th:inline="javascript">
+
         function postDelete() {
             fetch("http://localhost:8080/board/[[${post.id}]]/delete", {
                 method: 'DELETE'
@@ -11,16 +12,23 @@
         function saveComment() {
             let commentAuthor =  document.getElementById('commentAuthor').value;
             let commentContent = document.getElementById('commentContent').value;
+
+            let formDataObject = {
+                "author": commentAuthor,
+                "content": commentContent,
+                "post": {"id": [[${post.id}]]},
+            };
+
+            if([[${userStatus.state}]] == 'SIGNING'){
+                formDataObject.account = {"id": [[${userStatus.id}]]}
+            }
+
             fetch("http://localhost:8080/board/comment/save", {
                 headers: {
                     "Content-Type": "application/json"
                 },
                 method: 'POST',
-                body: JSON.stringify({
-                    "author": commentAuthor,
-                    "content": commentContent,
-                    "post": {"id": [[${post.id}]]}
-                })
+                body: JSON.stringify(formDataObject)
             })
                 .finally(() => window.location.href = "http://localhost:8080/board/[[${post.id}]]");
         }
@@ -28,17 +36,24 @@
         function saveSubComment(parentCommentId) {
             let subCommentAuthor = document.getElementById("subCommentAuthor_" + parentCommentId).value;
             let subCommentContent = document.getElementById('subCommentContent_' + parentCommentId).value;
+
+            let formDataObject = {
+                "author": subCommentAuthor,
+                "content": subCommentContent,
+                "isPresentParent": true,
+                "parentComment": {"id": parentCommentId}
+            };
+
+            if([[${userStatus.state}]] == 'SIGNING'){
+                formDataObject.account = {"id": [[${userStatus.id}]]}
+            }
+
             fetch("http://localhost:8080/board/comment/save", {
                 headers: {
                     "Content-Type": "application/json"
                 },
                 method: 'POST',
-                body: JSON.stringify({
-                    "author": subCommentAuthor,
-                    "content": subCommentContent,
-                    "isPresentParent": true,
-                    "parentComment": {"id": parentCommentId}
-                })
+                body: JSON.stringify(formDataObject)
             })
                 .finally(() => window.location.href = "http://localhost:8080/board/[[${post.id}]]");
         }
@@ -91,8 +106,8 @@
     </div>
 
     <div style="margin-top: 20px">
-        <button type="button" th:onclick="|location.href='${post.id}/edit'|">수정</button>
-        <button type="button" onclick="postDelete()">삭제</button>
+        <button type="button" th:onclick="|location.href='${post.id}/edit'|" th:if="${post.accountId == userStatus.id}">수정</button>
+        <button type="button" onclick="postDelete()" th:if="${post.accountId == userStatus.id}">삭제</button>
         <button type="button" onclick="location.href='/board'">목록</button>
     </div>
     <div style="margin-top: 30px;margin-left: 50px">
@@ -100,20 +115,20 @@
             <tr style="height: 30px">
                 <td style="width: 120px;text-align: center" th:text="${comment.author}"></td>
                 <td style="width: 645px" th:text="${comment.content}"></td>
+                <td style="width: 40px;text-align: center"><a th:if="${!comment.isDeleted && comment.accountId == userStatus.id}" th:onclick="|commentDelete('${comment.id}')|">삭제</a>
+                </td>
                 <td style="width: 60px" th:if="${!comment.isDeleted}"
                     th:onclick="|changeVisibilityForInputBox('${comment.id}')|"><a>대댓글</a>
-                <td style="width: 50px" th:if="${!comment.isDeleted}" th:onclick="|commentDelete('${comment.id}')|"><a>삭제</a>
-                </td>
             </tr>
             <tr th:each="subComment : ${comment.subComments}" style="height: 25px">
                 <td style="text-align: center" th:text="${subComment.author}"></td>
                 <td th:text="|↳ ${subComment.content}|"></td>
+                <td style="width: 40px;text-align: center"><a th:onclick="|commentDelete('${subComment.id}')|" th:if="${subComment.accountId == userStatus.id || subComment.accountId == null}">삭제</a></td>
                 <td style="width: 60px"></td>
-                <td style="width: 50px" th:onclick="|commentDelete('${subComment.id}')|"><a>삭제</a></td>
             </tr>
             <tr>
                 <td style="align-content: center">
-                    <input style="display: none;width: 110px;" th:id="|subCommentAuthor_${comment.id}|">
+                    <input style="display: none;width: 110px;" th:id="|subCommentAuthor_${comment.id}|" th:value="${userStatus.name}" th:readonly="${userStatus.state.toString().equals('SIGNING')}">
                 </td>
                 <td>
                     <input style="display: none;width: 645px" type="text" th:id="|subCommentContent_${comment.id}|" >
@@ -130,7 +145,7 @@
         <table style="margin-top: 15px;margin-left: 10px">
             <tr>
                 <td style="width: 120px;">
-                    <input style="width: 110px" type="text" id="commentAuthor">
+                    <input style="width: 110px" type="text" id="commentAuthor" th:value="${userStatus.name}" th:readonly="${userStatus.state.toString().equals('SIGNING')}">
                 </td>
                 <td style="width: 645px">
                     <input style="width: 645px" type="text" id="commentContent">
