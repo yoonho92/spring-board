@@ -6,7 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import test.board.dto.UserStatusForSession;
 import test.board.post.dto.Detail;
-import test.board.post.dto.DefaultForPost;
+import test.board.post.dto.DefaultPost;
+import test.board.post.dto.ReqForPost;
 
 import java.time.*;
 import java.util.List;
@@ -29,9 +30,9 @@ public class PostService {
                 .orElseGet(Post::new);
     }
 
-    public Page<DefaultForPost> searchByTitle(String title, Pageable pageable) {
+    public Page<DefaultPost> searchByTitle(String title, Pageable pageable) {
         return postRepository.findByTitleContaining(title, pageable).map((post -> {
-            return new DefaultForPost(
+            return new DefaultPost(
                     post.getId(),
                     post.getAuthor(),
                     post.getTitle());
@@ -56,26 +57,26 @@ public class PostService {
         }).collect(Collectors.toList());
     }
 
-    public DefaultForPost saveForDefault(Post post) {
-        Post savedPost = this.save(post);
+    public DefaultPost saveForDefault(ReqForPost req) {
+        Post savedPost = this.save(ReqForPost.toPost(req));
 
-        return new DefaultForPost(
+        return new DefaultPost(
                 savedPost.getId(),
                 savedPost.getTitle(),
                 savedPost.getAuthor()
         );
     }
 
-    public DefaultForPost edit(Post post, UserStatusForSession userStatus) {
-        Post foundPost = this.findById(post.getId());
+    public DefaultPost edit(ReqForPost req, UserStatusForSession userStatus) {
+        Post foundPost = this.findById(req.getId());
 
         if (Objects.equals(foundPost.getAccountId(), userStatus.getAccountId())) {
-            return this.saveForDefault(post);
+            return this.saveForDefault(req);
         } else {
             logger.warning("post.accountId not equal userStatus.accountId");
         }
 
-        return new DefaultForPost(null, null, null);
+        return new DefaultPost(null, null, null);
     }
 
     public Detail findDetailById(Long id) {

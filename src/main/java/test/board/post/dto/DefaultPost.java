@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DefaultForPost {
+public class DefaultPost {
     private Long id;
     private String title;
     private String author;
