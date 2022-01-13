@@ -2,10 +2,7 @@ package test.board.comment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import test.board.comment.Comment;
-import test.board.comment.CommentService;
-
-import java.util.List;
+import test.board.comment.dto.DefaultForComment;
 
 @RestController
 @AllArgsConstructor
@@ -13,25 +10,16 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
-    @GetMapping("/{postId}")
-    public List<Comment> findByPostId(@PathVariable String postId){
-        return commentService.findByPostId(postId);
-    }
-
     @DeleteMapping(value = "/{id}/delete")
-    public Comment deleteById(@PathVariable("id") Long id){
-        return commentService.deleteById(id);
+    public void deleteById(@PathVariable("id") Long id){
+         commentService.deleteByIdForHierarchicalComment(id);
     }
 
     @PostMapping("/save")
-    public Comment saveComment(
+    public DefaultForComment saveComment(
             @RequestBody Comment comment){
 
-        return commentService.saveComment(comment);
+        return commentService.saveForDefault(comment);
     }
 
-    @GetMapping("/list")
-    public List<Comment> findAll(){
-        return commentService.findAll();
-    }
 }
