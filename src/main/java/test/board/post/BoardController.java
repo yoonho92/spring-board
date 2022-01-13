@@ -69,7 +69,7 @@ public class BoardController {
     @ResponseBody
     @PostMapping("/save")
     public DefaultForPost savePost(@RequestBody Post post) {
-        return boardService.save(post);
+        return boardService.saveForDefault(post);
     }
 
     @GetMapping("/{id}/edit")
@@ -94,7 +94,7 @@ public class BoardController {
     public void deletePostById(
             @PathVariable("id") Long id,
             @SessionAttribute("userStatus") UserStatusForSession userStatus) {
-        boardService.deleteById(id, userStatus);
+        boardService.deleteByIdAndSession(id, userStatus);
     }
 
 }
