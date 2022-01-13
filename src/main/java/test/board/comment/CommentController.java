@@ -3,6 +3,7 @@ package test.board.comment;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import test.board.comment.dto.DefaultForComment;
+import test.board.comment.dto.ReqForComment;
 
 @RestController
 @AllArgsConstructor
@@ -16,10 +17,10 @@ public class CommentController {
     }
 
     @PostMapping("/save")
-    public DefaultForComment saveComment(
-            @RequestBody Comment comment){
+    public DefaultForComment saveComment(@RequestBody ReqForComment req){
+        System.out.println(req);
 
-        return commentService.saveForDefault(comment);
+        return commentService.saveForDefault(req);
     }
 
 }

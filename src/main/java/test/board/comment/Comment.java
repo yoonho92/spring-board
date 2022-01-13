@@ -2,10 +2,9 @@ package test.board.comment;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import test.board.auth.Account;
+import test.board.comment.dto.ReqForComment;
 import test.board.post.Post;
 
 import javax.persistence.*;
@@ -42,7 +41,7 @@ public class Comment {
     private Post post;
 
     @Column(name = "POST_ID", insertable = false, updatable = false)
-    private String postId;
+    private Long postId;
 
     @JsonManagedReference(value = "commentAndComment")
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
@@ -55,6 +54,5 @@ public class Comment {
 
     @Column(name = "PARENT_ID", insertable = false, updatable = false)
     private Long parentId;
-
 
 }
