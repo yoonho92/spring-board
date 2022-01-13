@@ -1,7 +1,7 @@
 <html>
 <head>
     <script th:inline="javascript">
-        function requestPatch() {
+        function savePost() {
             let formData = new FormData(document.getElementById('formForEdit'));
             let formDataObject = {};
             formData.forEach(((value, key) => formDataObject[key] = value))
@@ -18,7 +18,7 @@
             }
 
             if ([[${userStatus.state}]] == 'SIGNING') {
-                formDataObject.account = {"id": [[${userStatus.accountId}]]}
+                formDataObject.accountId = [[${userStatus.accountId}]]
             }
 
             fetch("http://localhost:8080/board/save", {
@@ -57,14 +57,14 @@
         <div style="position: relative;left: 85%;margin-bottom: 100px">
             <table>
                 <tr>
-                    <td style="width: 65px">
-                        <a href="/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
-                        <a href="/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
+                    <td style="width: 100px;text-align: center">
+                        <a href="/board/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
+                        <a href="/board/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
                     </td>
                     <td style="width: 65px">
-                        <a href="/auth/signup" style="text-decoration:none !important;color: black"
+                        <a href="/board/auth/signup" style="text-decoration:none !important;color: black"
                            th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
-                        <a href="/auth/logout" style="text-decoration:none !important;color: black"
+                        <a href="/board/auth/logout" style="text-decoration:none !important;color: black"
                            th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
                     </td>
                 </tr>
@@ -88,7 +88,7 @@
         </form>
     </div>
     <div class="innerDiv">
-        <button type="button" onclick="requestPatch()">등록</button>
+        <button type="button" onclick="savePost()">등록</button>
         <button type="button" onclick="location.href='/board'">취소</button>
     </div>
 </div>

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import test.board.auth.Account;
 import test.board.comment.Comment;
 
@@ -29,6 +31,8 @@ public class Post {
     private String title;
     private String author;
     private String content;
+
+    @Column(name = "CREATED_AT")
     private OffsetDateTime date = OffsetDateTime.now();
 
     @ManyToOne
@@ -36,7 +40,7 @@ public class Post {
     private Account account;
 
     @JsonManagedReference(value = "postAndComment")
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
 }

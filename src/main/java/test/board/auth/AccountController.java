@@ -3,7 +3,7 @@ package test.board.auth;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import test.board.auth.dto.Sign;
+import test.board.auth.dto.ReqForSign;
 import test.board.auth.dto.SignIn;
 import test.board.auth.dto.SignUp;
 
@@ -24,7 +24,7 @@ public class AccountController {
     @ResponseBody
     @PostMapping("/signin")
     public SignIn signIn(
-            @RequestBody Sign req,
+            @RequestBody ReqForSign req,
             HttpSession session
     ) {
         return authService.signIn(req, session);
@@ -38,7 +38,7 @@ public class AccountController {
     @ResponseBody
     @PostMapping("/signup")
     public SignUp signUp(
-            @RequestBody Sign req,
+            @RequestBody ReqForSign req,
             HttpSession session) {
         return authService.signUp(req, session);
     }

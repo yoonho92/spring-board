@@ -4,7 +4,7 @@
         div#wrapper {
             position: absolute;
             top: 50%;
-            left: 50%;
+            left: 55%;
             width: 400px;
             height: 300px;
             margin-left: -250px;
@@ -21,7 +21,7 @@
         function signIn() {
             let userName = document.getElementById('userName').value;
             let userSecret = document.getElementById('userSecret').value;
-            fetch("http://localhost:8080/auth/signin", {
+            fetch("http://localhost:8080/board/auth/signin", {
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -37,7 +37,7 @@
                         window.location.href = "http://localhost:8080/board"
                     } else if (it.state == "NOTEXIST" || it.state == "FAIL") {
                         alert("아이디 혹은 비밀번호가 올바르지 않습니다.")
-                        window.location.href = "http://localhost:8080/auth/signin"
+                        window.location.href = "http://localhost:8080/board/auth/signin"
                     }
                 })
         }
@@ -65,7 +65,7 @@
         <tr style="text-align: right;height: 50px">
             <td></td>
             <td>
-                <a href="/auth/signup" style="text-decoration:none !important;color: black">SignUp</a>
+                <a href="/board/auth/signup" style="text-decoration:none !important;color: black">SignUp</a>
                 <a onclick="signIn()">SignIn</a>
             </td>
         </tr>

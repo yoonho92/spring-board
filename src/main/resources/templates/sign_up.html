@@ -4,7 +4,7 @@
         div#wrapper {
             position: absolute;
             top: 50%;
-            left: 50%;
+            left: 55%;
             width: 400px;
             height: 300px;
             margin-left: -250px;
@@ -23,7 +23,7 @@
         function signUp() {
             let userName = document.getElementById('userName').value;
             let userSecret = document.getElementById('userSecret').value;
-            fetch("http://localhost:8080/auth/signup", {
+            fetch("http://localhost:8080/board/auth/signup", {
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -39,7 +39,7 @@
                         window.location.href = "http://localhost:8080/board"
                     } else if (it.state == "EXIST") {
                         alert("이미 존재하는 아이디입니다.")
-                        window.location.href = "http://localhost:8080/auth/signup"
+                        window.location.href = "http://localhost:8080/board/auth/signup"
                     }
                 })
         }

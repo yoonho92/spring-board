@@ -23,11 +23,11 @@
             let formDataObject = {
                 "author": commentAuthor,
                 "content": commentContent,
-                "post": {"id": [[${post.id}]]},
+                "postId": [[${post.id}]]
             };
 
             if([[${userStatus.state}]] == 'SIGNING'){
-                formDataObject.account = {"id": [[${userStatus.accountId}]]}
+                formDataObject.accountId = [[${userStatus.accountId}]]
             }
 
             fetch("http://localhost:8080/board/comment/save", {
@@ -55,12 +55,12 @@
             let formDataObject = {
                 "author": subCommentAuthor,
                 "content": subCommentContent,
-                "isPresentParent": true,
-                "parentComment": {"id": parentCommentId}
+                "presentParent": true,
+                "parentId": parentCommentId
             };
 
             if([[${userStatus.state}]] == 'SIGNING'){
-                formDataObject.account = {"id": [[${userStatus.accountId}]]}
+                formDataObject.accountId = [[${userStatus.accountId}]]
             }
 
             fetch("http://localhost:8080/board/comment/save", {
@@ -87,7 +87,7 @@
         }
 
         function logout(){
-            fetch("http://localhost:8080/auth/logout", {
+            fetch("http://localhost:8080/board/auth/logout", {
                 method: 'POST'
             })
                 .finally(() => window.location.href = "http://localhost:8080/board")
@@ -117,13 +117,13 @@
         <div style="position: relative;left: 85%;margin-bottom: 100px">
             <table>
                 <tr>
-                    <td style="width: 65px">
-                        <a href="/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
-                        <a href="/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
+                    <td style="width: 100px;text-align: center">
+                        <a href="/board/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
+                        <a href="/board/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
                     </td>
                     <td style="width: 65px">
-                        <a href="/auth/signup" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
-                        <a href="/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
+                        <a href="/board/auth/signup" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
+                        <a href="/board/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
                     </td>
                 </tr>
             </table>
@@ -164,7 +164,7 @@
             </tr>
             <tr>
                 <td style="align-content: center">
-                    <input style="display: none;width: 110px;" th:id="|subCommentAuthor_${comment.id}|" th:value="${userStatus.name}" th:readonly="${userStatus.state.toString().equals('SIGNING')}">
+                    <input style="display: none;width: 120px;" th:id="|subCommentAuthor_${comment.id}|" th:value="${userStatus.name}" th:readonly="${userStatus.state.toString().equals('SIGNING')}">
                 </td>
                 <td>
                     <input style="display: none;width: 645px" type="text" th:id="|subCommentContent_${comment.id}|" >

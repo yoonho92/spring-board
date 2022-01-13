@@ -2,7 +2,7 @@ package test.board.comment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import test.board.comment.dto.DefaultForComment;
+import test.board.comment.dto.SimpleComment;
 import test.board.comment.dto.ReqForComment;
 
 @Service
@@ -24,11 +24,10 @@ public class CommentService {
                 .orElseGet(Comment::new);
     }
 
-    public DefaultForComment saveForDefault(ReqForComment req) {
-        System.out.println(ReqForComment.toComment(req));
+    public SimpleComment saveForDefault(ReqForComment req) {
         Comment savedComment = this.save(ReqForComment.toComment(req));
 
-        return new DefaultForComment(
+        return new SimpleComment(
                 savedComment.getId(),
                 savedComment.getContent(),
                 savedComment.getAuthor()

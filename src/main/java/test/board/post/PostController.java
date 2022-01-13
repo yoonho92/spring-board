@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import test.board.dto.Pagination;
 import test.board.dto.UserStatusForSession;
-import test.board.post.dto.DefaultPost;
+import test.board.post.dto.SimplePost;
 import test.board.post.dto.Detail;
 import test.board.post.dto.ReqForPost;
 
@@ -32,7 +32,7 @@ public class PostController {
             @RequestParam(name = "limit", defaultValue = "10", required = false) int limit,
             @ModelAttribute("userStatus") UserStatusForSession userStatus) {
 
-        Page<DefaultPost> pages = boardService.searchByTitle(title, PageRequest.of(page - 1, limit, Sort.Direction.DESC, "id"));
+        Page<SimplePost> pages = boardService.searchByTitle(title, PageRequest.of(page - 1, limit, Sort.Direction.DESC, "id"));
         model.addAttribute("posts", pages);
         model.addAttribute("title", title);
         model.addAttribute("pagination", new Pagination(pages, page - 1));
@@ -55,7 +55,7 @@ public class PostController {
             Model model,
             @ModelAttribute("userStatus") UserStatusForSession userStatus,
             @PathVariable("id") Long id) {
-        model.addAttribute("post", boardService.findDetailById(id));
+        model.addAttribute("post", boardService.findByIdForDetail(id));
         model.addAttribute("userStatus", userStatus);
 
         return "post_detail";
@@ -69,22 +69,22 @@ public class PostController {
 
     @ResponseBody
     @PostMapping("/save")
-    public DefaultPost savePost(@RequestBody ReqForPost req) {
-        return boardService.saveForDefault(req);
+    public SimplePost savePost(@RequestBody ReqForPost req) {
+        return boardService.save(req);
     }
 
     @GetMapping("/{id}/edit")
     public String editPostById(
             Model model,
             @PathVariable("id") Long id) {
-        model.addAttribute("post", boardService.findDetailById(id));
+        model.addAttribute("post", boardService.findByIdForEdit(id));
 
         return "post_edit";
     }
 
     @ResponseBody
     @PatchMapping(value = "/{id}/edit")
-    public DefaultPost editPostById(
+    public SimplePost editPostById(
             @RequestBody ReqForPost req,
             @SessionAttribute("userStatus") UserStatusForSession userStatus) {
         return boardService.edit(req, userStatus);

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import test.board.auth.Account;
-import test.board.comment.dto.ReqForComment;
 import test.board.post.Post;
 
 import javax.persistence.*;
@@ -26,7 +25,9 @@ public class Comment {
     private String content;
     private Boolean isDeleted = false;
     private Boolean isPresentParent = false;
-    private OffsetDateTime date = OffsetDateTime.now();
+
+    @Column(name = "CREATED_AT")
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "ACCOUNT_ID")

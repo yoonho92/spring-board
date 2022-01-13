@@ -20,5 +20,7 @@ public class Account {
 
     private String name;
     private String secret;
-    private OffsetDateTime date = OffsetDateTime.now();
+
+    @Column(name = "CREATED_AT")
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 }

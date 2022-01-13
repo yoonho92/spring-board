@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DefaultForComment {
+public class SimpleComment {
     private Long id;
     private String content;
     private String author;

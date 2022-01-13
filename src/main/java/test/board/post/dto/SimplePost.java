@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DefaultPost {
+public class SimplePost {
     private Long id;
     private String title;
     private String author;
+    private String content;
 }
