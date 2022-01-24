@@ -17,4 +17,5 @@ public class Detail {
     private String content;
     private List<Comment> comments;
     private OffsetDateTime date;
+    private boolean isOwner;
 }

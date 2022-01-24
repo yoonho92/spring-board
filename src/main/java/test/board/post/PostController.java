@@ -16,6 +16,8 @@ import test.board.post.dto.ReqForPost;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -30,7 +32,8 @@ public class PostController {
             @RequestParam(required = false, defaultValue = "") String title,
             @RequestParam(name = "page", defaultValue = "1", required = false) int page,
             @RequestParam(name = "limit", defaultValue = "10", required = false) int limit,
-            @ModelAttribute("userStatus") UserStatusForSession userStatus) {
+            @SessionAttribute(value = "userStatus", required = false) UserStatusForSession userStatus
+    ) {
 
         Page<SimplePost> pages = boardService.searchByTitle(title, PageRequest.of(page - 1, limit, Sort.Direction.DESC, "id"));
         model.addAttribute("posts", pages);
@@ -38,6 +41,7 @@ public class PostController {
         model.addAttribute("pagination", new Pagination(pages, page - 1));
 
         return "index";
+
     }
 
     @ResponseBody
@@ -45,7 +49,7 @@ public class PostController {
     public List<Detail> findAllByAccountIdAndPeriodDate(
             @RequestParam(name = "accountId", required = false, defaultValue = "") Long accountId,
             @RequestParam(name = "beginDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate begin,
-            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end){
+            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
 
         return boardService.findAllByAccountIdAndPeriodDate(accountId, begin, end);
     }
@@ -53,10 +57,10 @@ public class PostController {
     @GetMapping("/{id}")
     public String findPostById(
             Model model,
-            @ModelAttribute("userStatus") UserStatusForSession userStatus,
+            @SessionAttribute(value = "userStatus", required = false) Optional<UserStatusForSession> userStatus,
             @PathVariable("id") Long id) {
-        model.addAttribute("post", boardService.findByIdForDetail(id));
-        model.addAttribute("userStatus", userStatus);
+        model.addAttribute("post", boardService.findByIdForDetail(id, userStatus));
+        model.addAttribute("userStatus", userStatus.orElseGet(UserStatusForSession::new));
 
         return "post_detail";
     }
@@ -69,8 +73,10 @@ public class PostController {
 
     @ResponseBody
     @PostMapping("/save")
-    public SimplePost savePost(@RequestBody ReqForPost req) {
-        return boardService.save(req);
+    public SimplePost savePost(
+            @RequestBody ReqForPost req,
+            @SessionAttribute("userStatus") UserStatusForSession userStatus) throws Exception {
+        return boardService.savePost(req, userStatus);
     }
 
     @GetMapping("/{id}/edit")
@@ -86,8 +92,8 @@ public class PostController {
     @PatchMapping(value = "/{id}/edit")
     public SimplePost editPostById(
             @RequestBody ReqForPost req,
-            @SessionAttribute("userStatus") UserStatusForSession userStatus) {
-        return boardService.edit(req, userStatus);
+            @SessionAttribute("userStatus") UserStatusForSession session) throws Exception {
+        return boardService.edit(req, session);
     }
 
     @ResponseBody
@@ -95,7 +101,14 @@ public class PostController {
     public void deletePostById(
             @PathVariable("id") Long id,
             @SessionAttribute("userStatus") UserStatusForSession userStatus) {
+        System.out.println(userStatus);
         boardService.deleteByIdAndSession(id, userStatus);
+    }
+
+    @ResponseBody
+    @PostMapping("/session-data")
+    public UserStatusForSession offerSession(@SessionAttribute(value = "userStatus", required = false) UserStatusForSession userStatus) {
+        return Objects.requireNonNullElseGet(userStatus, () -> new UserStatusForSession(null, null, UserStatusForSession.State.NONE));
     }
 
 }
