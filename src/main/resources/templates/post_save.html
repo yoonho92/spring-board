@@ -39,9 +39,9 @@
             top: 50%;
             left: 50%;
             width: 950px;
-            height: 1000px;
+            height: 800px;
             margin-left: -500px;
-            margin-top: -500px;
+            margin-top: -430px;
             text-align: right;
         }
 
@@ -53,23 +53,9 @@
 </head>
 <body>
 <div id="wrapper">
-    <div class="innerDiv" style="width: 950px;text-align: left">
-        <div style="position: relative;left: 85%;margin-bottom: 100px">
-            <table>
-                <tr>
-                    <td style="width: 100px;text-align: center">
-                        <a href="/board/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
-                        <a href="/board/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
-                    </td>
-                    <td style="width: 65px">
-                        <a href="/board/auth/signup" style="text-decoration:none !important;color: black"
-                           th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
-                        <a href="/board/auth/logout" style="text-decoration:none !important;color: black"
-                           th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
-                    </td>
-                </tr>
-            </table>
-        </div>
+    <th:block th:replace="header :: header"></th:block>
+
+    <div class="innerDi" style="width: 950px;text-align: left">
         <form name="formData" id="formForEdit">
             <div class="innerDiv" style="width: 950px;text-align: left">
                 <label>작성자</label>

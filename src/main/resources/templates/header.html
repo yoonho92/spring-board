@@ -1,0 +1,39 @@
+<html>
+<th:block th:fragment="header">
+
+        <div style="position: static;margin-bottom: 100px">
+            <table style="float: right">
+                <tr>
+                    <td style="width: 100px;text-align: center">
+                        <a class="beforesign" href="/board/auth/signin"
+                           style="text-decoration:none !important;color: black;display: none">SignIn</a>
+                        <a class="aftersign" style="text-decoration:none !important;color: black;display: none"></a>
+                    </td>
+                    <td style="width: 65px">
+                        <a class="beforesign" href="/board/auth/signup"
+                           style="text-decoration:none !important;color: black;display: none">SignUp</a>
+                        <a class="aftersign" href="/board/auth/logout"
+                           style="text-decoration:none !important;color: black;display: none" onclick="logout()">Logout</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    <script>
+        fetch("http://localhost:8080/board/session-data", {
+            method: 'POST'
+        })
+            .then((response) => response.json())
+            .then((response) => {
+                if (response.state === "SIGNING") {
+                    document.getElementsByClassName("aftersign")[0].style.display = ""
+                    document.getElementsByClassName("aftersign")[0].textContent = response.name
+                    document.getElementsByClassName("aftersign")[1].style.display = ""
+                } else {
+                    document.getElementsByClassName("beforesign")[0].style.display = ""
+                    document.getElementsByClassName("beforesign")[1].style.display = ""
+                }
+            })
+    </script>
+
+</th:block>
+</html>

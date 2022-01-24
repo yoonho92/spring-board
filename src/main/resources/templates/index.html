@@ -22,30 +22,17 @@
             top: 50%;
             left: 50%;
             width: 950px;
-            height: 1000px;
+            height: 800px;
             margin-left: -500px;
-            margin-top: -500px;
+            margin-top: -430px;
             text-align: right;
         }
     </style>
 </head>
 <body>
 <div id="wrapper">
-    <div style="position: relative;left: 85%;margin-bottom: 100px">
-        <table>
-            <tr>
-                <td style="width: 100px;text-align: center">
-                    <a href="/board/auth/signin" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignIn</a>
-                    <a href="/board/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" th:text="|${userStatus.name}님|"></a>
-                </td>
-                <td style="width: 65px">
-                    <a href="/board/auth/signup" style="text-decoration:none !important;color: black" th:if="${!userStatus.state.toString().equals('SIGNING')}">SignUp</a>
-                    <a href="/board/auth/logout" style="text-decoration:none !important;color: black" th:if="${userStatus.state.toString().equals('SIGNING')}" onclick="logout()">Logout</a>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <table style="width: 850px;">
+    <th:block th:replace="header :: header"></th:block>
+    <table>
         <tr style="height: 70px">
             <th style="width: 100px;">번호</th>
             <th style="width: 650px;">제목</th>
