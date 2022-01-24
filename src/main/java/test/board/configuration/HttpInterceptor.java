@@ -7,25 +7,26 @@ import test.board.dto.UserStatusForSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Component
 public class HttpInterceptor implements HandlerInterceptor {
     @Override
-    public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response,
-                             Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
 
-        HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession(false);
 
-        Object userStatus = session.getAttribute("userStatus");
-        if (userStatus == null) {
-            session.setAttribute(
-                    "userStatus",
-                    new UserStatusForSession(null, null, UserStatusForSession.State.NONE)
-            );
+        if (session != null) {
+            UserStatusForSession userStatus = (UserStatusForSession) session.getAttribute("userStatus");
+            if(userStatus != null){
+                return true;
+            }
         }
 
-        return true;
+        String requestURI = request.getRequestURI();
+        response.sendRedirect("/board/auth/signin?redirectURL=" + requestURI);
+
+        return false;
     }
 
 }
