@@ -2,16 +2,21 @@ package test.board.comment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import test.board.comment.dto.SimpleComment;
-import test.board.comment.dto.ReqForComment;
+import test.board.dto.comment.SimpleComment;
+import test.board.dto.comment.ReqForComment;
+import test.board.dto.common.UserStatusForSession;
+import test.board.entity.Comment;;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
 
-    private Comment save(Comment comment) {
-        return commentRepository.save(comment);
+    private Comment save(Comment comment, UserStatusForSession session) throws Exception {
+        if(Objects.equals(comment.getAccountId(), session.getAccountId())){
+            return commentRepository.save(comment);
+        }else throw new Exception();
     }
 
     private void deleteById(Long id) {
@@ -24,19 +29,20 @@ public class CommentService {
                 .orElseGet(Comment::new);
     }
 
-    public SimpleComment saveForDefault(ReqForComment req) {
-        Comment savedComment = this.save(ReqForComment.toComment(req));
+    public SimpleComment saveForSimple(ReqForComment req, UserStatusForSession session) throws Exception {
+        Comment savedComment = this.save(ReqForComment.toComment(req), session);
 
         return new SimpleComment(
                 savedComment.getId(),
                 savedComment.getContent(),
-                savedComment.getAuthor()
+                savedComment.getAuthor(),
+                false
         );
     }
 
-    public void deleteByIdForHierarchicalComment(Long id) {
+    public void deleteByIdForHierarchicalComment(Long id, UserStatusForSession session) {
         commentRepository.findById(id).map((comment) -> {
-            if (comment.subComments.isEmpty()) {
+            if (comment.getSubComments().isEmpty()) {
                 this.deleteById(id);
 
                 if (comment.getIsPresentParent()) {
@@ -49,7 +55,11 @@ public class CommentService {
             } else {
                 comment.setContent("삭제된 댓글입니다.");
                 comment.setIsDeleted(true);
-                this.save(comment);
+                try {
+                    this.save(comment, session);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return comment;
         });

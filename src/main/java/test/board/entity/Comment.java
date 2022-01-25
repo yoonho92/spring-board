@@ -1,10 +1,8 @@
-package test.board.comment;
+package test.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import test.board.auth.Account;
-import test.board.post.Post;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;

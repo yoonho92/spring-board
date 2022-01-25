@@ -1,4 +1,4 @@
-package test.board.auth.dto;
+package test.board.dto.account;
 
 import lombok.Data;
 

@@ -1,11 +1,12 @@
-package test.board.auth;
+package test.board.account;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import test.board.auth.dto.ReqForSign;
-import test.board.auth.dto.SignIn;
-import test.board.auth.dto.SignUp;
-import test.board.dto.UserStatusForSession;
+import test.board.dto.account.ReqForSign;
+import test.board.dto.account.SignIn;
+import test.board.dto.account.SignUp;
+import test.board.dto.common.UserStatusForSession;
+import test.board.entity.Account;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

@@ -1,4 +1,4 @@
-package test.board.post.dto;
+package test.board.dto.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

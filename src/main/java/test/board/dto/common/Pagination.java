@@ -1,4 +1,4 @@
-package test.board.dto;
+package test.board.dto.common;
 
 import lombok.Getter;
 import lombok.Setter;

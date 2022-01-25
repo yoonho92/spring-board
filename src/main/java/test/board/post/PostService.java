@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import test.board.dto.UserStatusForSession;
-import test.board.post.dto.Detail;
-import test.board.post.dto.SimplePost;
-import test.board.post.dto.ReqForPost;
+import test.board.dto.common.UserStatusForSession;
+import test.board.dto.post.Detail;
+import test.board.dto.post.SimplePost;
+import test.board.dto.post.ReqForPost;
+import test.board.entity.Post;
 
 import java.time.*;
 import java.util.List;

@@ -2,7 +2,7 @@ package test.board.configuration;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import test.board.dto.UserStatusForSession;
+import test.board.dto.common.UserStatusForSession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

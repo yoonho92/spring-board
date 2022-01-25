@@ -1,8 +1,8 @@
-package test.board.post.dto;
+package test.board.dto.post;
 
 import lombok.Data;
-import test.board.auth.Account;
-import test.board.post.Post;
+import test.board.entity.Account;
+import test.board.entity.Post;
 
 @Data
 public class ReqForPost {

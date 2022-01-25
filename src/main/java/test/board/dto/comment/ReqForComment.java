@@ -1,11 +1,9 @@
-package test.board.comment.dto;
+package test.board.dto.comment;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import test.board.auth.Account;
-import test.board.comment.Comment;
-import test.board.post.Post;
+import test.board.entity.Account;
+import test.board.entity.Comment;
+import test.board.entity.Post;
 
 @Data
 public class ReqForComment {

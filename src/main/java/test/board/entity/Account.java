@@ -1,4 +1,4 @@
-package test.board.auth;
+package test.board.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

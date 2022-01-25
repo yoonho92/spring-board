@@ -1,8 +1,8 @@
-package test.board.post.dto;
+package test.board.dto.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import test.board.comment.Comment;
+import test.board.entity.Comment;
 
 import java.time.OffsetDateTime;
 import java.util.List;

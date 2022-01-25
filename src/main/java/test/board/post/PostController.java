@@ -8,11 +8,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import test.board.dto.Pagination;
-import test.board.dto.UserStatusForSession;
-import test.board.post.dto.SimplePost;
-import test.board.post.dto.Detail;
-import test.board.post.dto.ReqForPost;
+import test.board.dto.common.Pagination;
+import test.board.dto.common.UserStatusForSession;
+import test.board.dto.post.SimplePost;
+import test.board.dto.post.Detail;
+import test.board.dto.post.ReqForPost;
 
 import java.time.LocalDate;
 import java.util.List;

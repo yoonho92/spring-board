@@ -1,13 +1,9 @@
-package test.board.post;
+package test.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import test.board.auth.Account;
-import test.board.comment.Comment;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
