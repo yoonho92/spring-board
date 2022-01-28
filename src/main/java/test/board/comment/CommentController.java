@@ -17,8 +17,8 @@ public class CommentController {
     public void deleteById(
             @PathVariable("id") Long id,
             @SessionAttribute(value = "userStatus", required = false) UserStatusForSession session
-    ){
-         commentService.deleteByIdForHierarchicalComment(id, session);
+    ) {
+        commentService.deleteByIdForHierarchicalComment(id, session);
     }
 
     @PostMapping("/save")
